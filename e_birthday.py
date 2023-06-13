@@ -17,26 +17,13 @@ def get_birthdays_per_week(users):
         birthdate = person['birthday']
         birthdate_week = birthdate.isocalendar()[1]
 
-        if birthdate_week == current_week and birthdate.day >= 5:
+        if birthdate_week == current_week and birthdate.weekday() >= 5:
             result['Monday'].append(person['name'])
             continue
         if birthdate_week == (current_week + 1) and birthdate.weekday() < 5:
-            if birthdate.weekday() == 0:
-                result['Monday'].append(person['name'])
-                continue
-            if birthdate.weekday() == 1:
-                result['Tuesday'].append(person['name'])
-                continue
-            if birthdate.weekday() == 2:
-                result['Wednesday'].append(person['name'])
-                continue
-            if birthdate.weekday() == 3:
-                result['Thursday'].append(person['name'])
-                continue
-            if birthdate.weekday() == 4:
-                result['Friday'].append(person['name'])
-                continue
-        
+            weekday = birthdate.strftime('%A')
+            result[weekday].append(person['name'])
+
     for day, names in result.items():
         if names:
             name_list = ', '.join(names)
@@ -44,6 +31,7 @@ def get_birthdays_per_week(users):
             result_rows.append(row)
         
     return '\n'.join(result_rows)
+    
 
 if __name__ == '__main__':
     
@@ -51,8 +39,9 @@ if __name__ == '__main__':
         {'name': 'Bill', 'birthday': datetime(2023, 7, 13)},
         {'name': 'Jill', 'birthday': datetime(2023, 6, 11)},
         {'name': 'Kim', 'birthday': datetime(2023, 6, 17)},
-        {'name': 'Will', 'birthday': datetime(2023, 6, 17)},
+        {'name': 'Will', 'birthday': datetime(2023, 6, 18)},
         {'name': 'Jan', 'birthday': datetime(2023, 6, 22)},
+        {'name': 'Dan', 'birthday': datetime(2023, 6, 23)},
     ]
 
     print(get_birthdays_per_week(users))
