@@ -1,4 +1,6 @@
 from datetime import datetime
+from faker import Faker
+from faker.providers import date_time
 
 
 def get_birthdays_per_week(users):
@@ -16,11 +18,17 @@ def get_birthdays_per_week(users):
     for person in users:
         birthdate = person['birthday']
         birthdate_week = birthdate.isocalendar()[1]
+        last_week = (datetime(current_date.year, 12, 31)).isocalendar()[1]
+
+        if current_week == last_week:
+            next_week = 1
+        else:
+            next_week = current_week + 1
 
         if birthdate_week == current_week and birthdate.weekday() >= 5:
             result['Monday'].append(person['name'])
             continue
-        if birthdate_week == (current_week + 1) and birthdate.weekday() < 5:
+        if birthdate_week == next_week and birthdate.weekday() < 5:
             weekday = birthdate.strftime('%A')
             result[weekday].append(person['name'])
 
@@ -35,13 +43,14 @@ def get_birthdays_per_week(users):
 
 if __name__ == '__main__':
     
-    users = [
-        {'name': 'Bill', 'birthday': datetime(2023, 7, 13)},
-        {'name': 'Jill', 'birthday': datetime(2023, 6, 11)},
-        {'name': 'Kim', 'birthday': datetime(2023, 6, 17)},
-        {'name': 'Will', 'birthday': datetime(2023, 6, 18)},
-        {'name': 'Jan', 'birthday': datetime(2023, 6, 22)},
-        {'name': 'Dan', 'birthday': datetime(2023, 6, 23)},
-    ]
+    fake = Faker()
+    Faker.seed(4152)
+
+    users = []
+    for _ in range(1000):
+        name = fake.name()
+        birthday = fake.date_of_birth(minimum_age=18, maximum_age=90)
+        user = {'name': name, 'birthday':birthday}
+        users.append(user)
 
     print(get_birthdays_per_week(users))
