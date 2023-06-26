@@ -1,6 +1,5 @@
 from datetime import datetime
 from faker import Faker
-from faker.providers import date_time
 
 
 def get_birthdays_per_week(users):
